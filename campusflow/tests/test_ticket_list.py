@@ -1,48 +1,60 @@
 import unittest
-from ticket_create import create_ticket, tickets
-from ticket_list import get_all_tickets, get_ticket
+from unittest.mock import patch
+
+from ticket_create import tickets
+from ticket_list import find_ticket, list_tickets, view_ticket
 
 
-class TestTicketListing(unittest.TestCase):
+class TestTicketList(unittest.TestCase):
 
     def setUp(self):
         tickets.clear()
 
-        create_ticket(
-            title="Internet failure",
-            category="Network",
-            urgency="high",
-            affected_users=12
-        )
-
-        create_ticket(
-            title="Broken keyboard",
-            category="Hardware",
-            urgency="low",
-            affected_users=1
-        )
-
-    def test_list_all_tickets(self):
-        result = get_all_tickets()
-
-        self.assertEqual(len(result), 2)
-
-    def test_list_returns_ticket_details(self):
-        result = get_all_tickets()
-
-        self.assertEqual(result[0]["title"], "Internet failure")
-        self.assertEqual(result[1]["title"], "Broken keyboard")
+        tickets.append({
+            "id": "T001",
+            "title": "Printer not working",
+            "category": "Hardware",
+            "urgency": "medium",
+            "affected_users": 3,
+            "priority": "medium",
+            "status": "Open",
+            "assigned_to": None
+        })
 
     def test_find_existing_ticket(self):
-        ticket = get_ticket("T001")
+        result = find_ticket("T001")
 
-        self.assertIsNotNone(ticket)
-        self.assertEqual(ticket["title"], "Internet failure")
+        self.assertEqual(result["id"], "T001")
+        self.assertEqual(result["title"], "Printer not working")
 
     def test_find_nonexistent_ticket(self):
-        ticket = get_ticket("T999")
+        result = find_ticket("T999")
 
-        self.assertIsNone(ticket)
+        self.assertIsNone(result)
+
+    def test_find_ticket_with_lowercase_id(self):
+        result = find_ticket("t001")
+
+        self.assertIsNotNone(result)
+        self.assertEqual(result["id"], "T001")
+
+    
+    def test_list_tickets_when_empty(self):
+        tickets.clear()
+
+        with patch("builtins.print") as mock_print:
+            list_tickets()
+
+        mock_print.assert_any_call(
+            "No tickets have been created yet."
+        )
+
+    def test_view_nonexistent_ticket(self):
+        with patch("builtins.input", return_value="T999"):
+            with patch("builtins.print") as mock_print:
+                view_ticket()
+
+        mock_print.assert_any_call("Ticket ID not found.")
 
 
 if __name__ == "__main__":

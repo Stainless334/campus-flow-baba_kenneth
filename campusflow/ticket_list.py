@@ -1,4 +1,4 @@
-tickets = []
+from ticket_create import tickets
 
 categories = ["Network", "Hardware", "Software", "Other"]
 urgency_levels = ["low", "medium", "high"]
@@ -34,8 +34,8 @@ def view_ticket():
     ticket = find_ticket(ticket_id)
 
     if ticket is None:
-        print("Error: Ticket ID not found.")
+        print("Ticket ID not found.")
         return
 
-    for field, value in ticket.items():
-        print(f"{field.replace('_', ' ').title()}: {value}")
+    for key, value in ticket.items():
+        print(f"{key.replace('_', ' ').title()}: {value}")
