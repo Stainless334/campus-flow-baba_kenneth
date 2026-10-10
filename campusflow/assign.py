@@ -10,13 +10,13 @@ def assign_ticket():
         return
 
     if ticket["status"] == "resolved":
-        print("Error: Reopen the ticket before modifying it.")
+        print("This ticket is closed. Reopen ticket before assigning.")
         return
 
     staff_name = input("Enter the staff member's name: ").strip()
 
     if not staff_name:
-        print("Error: Staff member's name cannot be blank.")
+        print("Invalid Input: Staff member's name cannot be blank.")
         return
 
     ticket["assigned_to"] = staff_name
