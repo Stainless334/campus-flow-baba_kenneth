@@ -82,3 +82,5 @@ def add():
     print(f"Priority: {ticket['priority']}")
     print(f"Status: {ticket['status']}")
 
+if __name__ == "__main__":
+    add()

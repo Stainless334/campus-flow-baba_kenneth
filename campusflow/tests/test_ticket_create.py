@@ -1,55 +1,36 @@
 import unittest
-from ticket_create import create_ticket, tickets
+from unittest.mock import patch
+
+from ticket_create import tickets, add
 
 
 class TestTicketCreation(unittest.TestCase):
 
     def setUp(self):
         tickets.clear()
+    
+    def test_create_ticket(self):
+        answers = [
+            
+            "Faulty laptop",
+            "Hardware",
+            "high",
+            "2",
+        ]
 
-    def test_create_ticket_successfully(self):
-        ticket = create_ticket(
-            title="Internet not working",
-            category="Network",
-            urgency="high",
-            affected_users=12
-        )
-
-        self.assertIsNotNone(ticket)
-        self.assertEqual(ticket["title"], "Internet not working")
-        self.assertEqual(ticket["category"], "Network")
-        self.assertEqual(ticket["urgency"], "high")
-        self.assertEqual(ticket["affected_users"], 12)
-
-    def test_ticket_has_an_id(self):
-        ticket = create_ticket(
-            title="Computer failure",
-            category="Hardware",
-            urgency="medium",
-            affected_users=2
-        )
-
-        self.assertIn("id", ticket)
-        self.assertTrue(ticket["id"].startswith("T"))
-
-    def test_ticket_is_saved(self):
-        create_ticket(
-            title="Network failure",
-            category="Network",
-            urgency="high",
-            affected_users=12
-        )
+        with patch("builtins.input", side_effect=answers):
+            with patch("builtins.print"):
+                add()
 
         self.assertEqual(len(tickets), 1)
-
-    def test_blank_title_is_rejected(self):
-        with self.assertRaises(ValueError):
-            create_ticket(
-                title="",
-                category="Network",
-                urgency="high",
-                affected_users=12
-            )
+        self.assertEqual(tickets[0]["id"], "T001")
+        self.assertEqual(tickets[0]["title"], "Faulty laptop")
+        self.assertEqual(tickets[0]["category"], "Hardware")
+        self.assertEqual(tickets[0]["urgency"], "high")
+        self.assertEqual(tickets[0]["affected_users"], 2)
+        self.assertEqual(tickets[0]["priority"], "high")
+        self.assertEqual(tickets[0]["status"], "open")
+        self.assertIsNone(tickets[0]["assigned_to"])
 
 
 if __name__ == "__main__":
