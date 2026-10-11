@@ -1,0 +1,10 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Temporary and backup files
+*.save
+*.tmp
+
+# Local ticket data
+data/tickets.json
